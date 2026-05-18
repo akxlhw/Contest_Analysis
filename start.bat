@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul 2>&1
 cd /d "%~dp0"
 
 echo ================================
@@ -14,16 +15,17 @@ if %errorlevel% neq 0 (
 )
 
 python -c "import streamlit, openpyxl" >nul 2>&1
+if %errorlevel% equ 0 goto deps_ok
+
+echo Installing dependencies...
+python -m pip install -r requirements.txt
 if %errorlevel% neq 0 (
-    echo Installing dependencies...
-    pip install -r requirements.txt
-    if %errorlevel% neq 0 (
-        echo [ERROR] Failed to install dependencies
-        pause
-        exit /b 1
-    )
+    echo [ERROR] Failed to install dependencies
+    pause
+    exit /b 1
 )
 
+:deps_ok
 if not exist "mock_students.xlsx" (
     echo Generating mock data...
     python generate_mock_data.py
