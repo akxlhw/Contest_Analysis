@@ -48,7 +48,7 @@ def check_deps():
     if need_install:
         print("正在安装/修复依赖...")
         subprocess.run(
-            [sys.executable, "-m", "pip", "install", "starlette<1.0.0", "-r", "requirements.txt"],
+            [sys.executable, "-m", "pip", "install", "--upgrade", "--force-reinstall", "starlette<1.0.0", "-r", "requirements.txt"],
             check=True,
         )
 
