@@ -43,21 +43,6 @@ def main():
     url = f"http://localhost:{PORT}"
     print(f"启动服务: {url}")
 
-    # ============================================================
-    # 通过 PYTHONPATH 注入 sitecustomize.py（Starlette 兼容性补丁）
-    # sitecustomize 在 Python 启动时自动执行，比 Streamlit 任何模块都早
-    # ============================================================
-    project_dir = os.path.dirname(os.path.abspath(__file__))
-    existing_pythonpath = os.environ.get("PYTHONPATH", "")
-    if existing_pythonpath:
-        new_pythonpath = f"{project_dir}{os.pathsep}{existing_pythonpath}"
-    else:
-        new_pythonpath = project_dir
-
-    env = os.environ.copy()
-    env["PYTHONPATH"] = new_pythonpath
-
-    # 子进程启动 Streamlit，避免同进程 DeltaGeneratorSingleton 冲突
     proc = subprocess.Popen(
         [
             sys.executable,
@@ -71,8 +56,7 @@ def main():
             "false",
             "--server.headless",
             "true",
-        ],
-        env=env,
+        ]
     )
 
     # 等待服务就绪后打开浏览器

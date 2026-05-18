@@ -1,2 +1,6 @@
 streamlit>=1.28.0
 openpyxl>=3.1.0
+# Streamlit 内部引用了 Starlette 的多个内部 API（如 IdentityResponder、
+# DEFAULT_EXCLUDED_CONTENT_TYPES 等），这些 API 在 Starlette 1.0.0+ 中已被移除或改名。
+# 因此必须将 starlette 锁定在 1.0.0 以下的兼容版本范围。
+starlette<1.0.0
