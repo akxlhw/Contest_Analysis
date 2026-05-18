@@ -21,15 +21,34 @@ def ensure_mock_data():
         print(f"模拟数据已存在: {MOCK_FILE}")
 
 
+def _is_starlette_compatible():
+    """检查 starlette 版本是否兼容当前 Streamlit"""
+    try:
+        import starlette
+
+        major = int(starlette.__version__.split(".")[0])
+        return major < 1
+    except Exception:
+        return False
+
+
 def check_deps():
-    """检查依赖是否安装"""
+    """检查依赖是否安装且版本兼容"""
+    need_install = False
     try:
         import streamlit  # noqa: F401
         import openpyxl  # noqa: F401
     except ImportError:
-        print("正在安装依赖...")
+        need_install = True
+
+    if not _is_starlette_compatible():
+        print("[WARN] Starlette 版本不兼容，需要降级到 <1.0.0...")
+        need_install = True
+
+    if need_install:
+        print("正在安装/修复依赖...")
         subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"],
+            [sys.executable, "-m", "pip", "install", "starlette<1.0.0", "-r", "requirements.txt"],
             check=True,
         )
 
